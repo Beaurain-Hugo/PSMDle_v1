@@ -24,7 +24,7 @@ export default function ChampionSearch({
           type="text"
           value={input}
           onChange={onInputChange}
-          placeholder="Enter champion name..."
+          placeholder="Enter professor name..."
           className="neon-input pr-12"
           disabled={disabled}
         />
