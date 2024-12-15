@@ -27,7 +27,7 @@ export default function Game() {
     useEffect(() => {
         const professor = getDailyProfessor();
         setDailyProfessor(professor);
-        localStorage.setItem("dailyProfessor", JSON.stringify(professor));
+        // localStorage.setItem("dailyProfessor", JSON.stringify(professor));
     }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
