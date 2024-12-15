@@ -11,32 +11,33 @@ import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
 
 export default function Game() {
-    const [dailyProfessor, setDailyProfessor] = useState<Professor | null>(
-        null
-    );
+    const [dailyProfessor, setDailyProfessor] = useState<Professor | null>(null);
     const [guesses, setGuesses] = useLocalStorage<string[]>("guesses", []);
     const [input, setInput] = useState("");
     const [suggestions, setSuggestions] = useState<string[]>([]);
-    const [gameWon, setGameWon] = useState(() => {
-        const savedGuesses = localStorage.getItem("guesses");
-        if (!savedGuesses) {
-            return false;
-        }
-        const guessesArray = JSON.parse(savedGuesses);
-        return guessesArray;
-    });
+    const [gameWon, setGameWon] = useState(false);
     const { width } = useWindowSize();
 
     useEffect(() => {
         const professor = getDailyProfessor();
         setDailyProfessor(professor);
-        if (
-            localStorage.getItem("lastVisit") !== getDaysSinceEpoch().toString()
-        ) {
+
+        const savedGuesses = localStorage.getItem("guesses");
+        if (savedGuesses) {
+            const guessesArray = JSON.parse(savedGuesses);
+            if (guessesArray.includes(professor.name)) {
+                setGameWon(true);
+            }
+        }
+
+        if (localStorage.getItem("lastVisit") !== getDaysSinceEpoch().toString()) {
             localStorage.clear();
             setGuesses([]);
+            setGameWon(false); // Réinitialiser l'état gameWon
             localStorage.setItem("lastVisit", getDaysSinceEpoch().toString());
         }
+
+        console.log(gameWon);
     }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
