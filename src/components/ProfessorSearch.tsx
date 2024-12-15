@@ -17,7 +17,7 @@ export default function ProfessorSearch({
     disabled,
 }: ProfessorSearchProps) {
     return (
-        <div className="relative mb-8">
+        <div className="relative">
             <div className="relative">
                 <input
                     type="text"

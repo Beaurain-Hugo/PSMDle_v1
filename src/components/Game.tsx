@@ -9,9 +9,12 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import { getDaysSinceEpoch } from "../utils/dateUtils";
 import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
+import YesterdayMessage from "./YesterdayMessage";
 
 export default function Game() {
-    const [dailyProfessor, setDailyProfessor] = useState<Professor | null>(null);
+    const [dailyProfessor, setDailyProfessor] = useState<Professor | null>(
+        null
+    );
     const [guesses, setGuesses] = useLocalStorage<string[]>("guesses", []);
     const [input, setInput] = useState("");
     const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -30,7 +33,9 @@ export default function Game() {
             }
         }
 
-        if (localStorage.getItem("lastVisit") !== getDaysSinceEpoch().toString()) {
+        if (
+            localStorage.getItem("lastVisit") !== getDaysSinceEpoch().toString()
+        ) {
             localStorage.clear();
             setGuesses([]);
             setGameWon(false); // Réinitialiser l'état gameWon
@@ -105,6 +110,7 @@ export default function Game() {
                     </div>
                 </main>
             </div>
+            <YesterdayMessage />
         </>
     );
 }
