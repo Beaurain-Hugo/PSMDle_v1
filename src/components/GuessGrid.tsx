@@ -37,10 +37,10 @@ export default function GuessGrid({ guesses, professors, dailyProfessor }: Guess
             }).map(([key, value], cellIndex) => (
               <div
                 key={cellIndex}
-                className={`rounded neon-border text-purple-100 p-2 text-center size-full flex items-center justify-center
+                className={`rounded neon-border no-scrollbar text-purple-100 p-2 text-center size-32 overflow-y-auto flex items-center justify-center
                   ${compareAttribute(
                     key === 'UE' ? guess.UE : value,
-                    key === 'UE' ? dailyProfessor?.UE : dailyProfessor?.[key as keyof Professor]
+                    key === 'UE' ? dailyProfessor?.UE ?? '' : dailyProfessor?.[key as keyof Professor] ?? ''
                   )}`}
               >
                 {value}

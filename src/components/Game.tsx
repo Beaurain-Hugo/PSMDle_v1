@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { professors } from "../data/professors";
 import { getDailyProfessor } from "../utils/professorUtils";
-import Header from "./Header";
 import ProfessorSearch from "./ProfessorSearch";
 import GuessGrid from "./GuessGrid";
 import WinMessage from "./WinMessage";
@@ -39,7 +38,7 @@ export default function Game() {
                 .filter((name) =>
                     name.toLowerCase().includes(value.toLowerCase())
                 )
-                .filter((name) => !guesses.includes(name)); // Exclure les professeurs déjà devinés
+                .filter((name) => !guesses.includes(name));
             setSuggestions(filtered);
         } else {
             setSuggestions([]);
@@ -47,7 +46,7 @@ export default function Game() {
     };
 
     const handleGuess = (professorName: string) => {
-        if (!dailyProfessor || gameWon || guesses.includes(professorName)) return; // Empêcher de deviner un professeur déjà deviné
+        if (!dailyProfessor || gameWon || guesses.includes(professorName)) return;
 
         const guess = professors.find((c) => c.name === professorName);
         if (!guess) return;
@@ -63,34 +62,31 @@ export default function Game() {
     };
 
     return (
-        <div className="synthwave-layout">
-            <div className="relative z-10">
-                <Header />
-                <main className="container px-4 pb-8 mx-auto">
-                    <div className="flex flex-col max-w-4xl gap-8 mx-auto neon-card">
-                        {gameWon && dailyProfessor && (
-                            <WinMessage
-                                guessCount={guesses.length}
-                                professor={dailyProfessor}
-                            />
-                        )}
-
-                        <ProfessorSearch
-                            input={input}
-                            onInputChange={handleInputChange}
-                            suggestions={suggestions}
-                            onSelect={handleGuess}
-                            disabled={gameWon}
+        <div className="relative z-10">
+            <main className="container px-4 pb-4 mx-auto md:pb-8">
+                <div className="flex flex-col max-w-full gap-4 mx-auto md:max-w-5xl md:gap-8 neon-card">
+                    {gameWon && dailyProfessor && (
+                        <WinMessage
+                            guessCount={guesses.length}
+                            professor={dailyProfessor}
                         />
+                    )}
 
-                        <GuessGrid
-                            guesses={guesses}
-                            professors={professors}
-                            dailyProfessor={dailyProfessor}
-                        />
-                    </div>
-                </main>
-            </div>
+                    <ProfessorSearch
+                        input={input}
+                        onInputChange={handleInputChange}
+                        suggestions={suggestions}
+                        onSelect={handleGuess}
+                        disabled={gameWon}
+                    />
+
+                    <GuessGrid
+                        guesses={guesses}
+                        professors={professors}
+                        dailyProfessor={dailyProfessor}
+                    />
+                </div>
+            </main>
         </div>
     );
 }

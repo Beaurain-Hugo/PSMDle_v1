@@ -8,7 +8,7 @@ export const getDailyProfessor = (): Professor => {
   return professors[index];
 };
 
-export const compareAttribute = (guessValue: any, targetValue: any): string => {
+export const compareAttribute = (guessValue: string | string[], targetValue: string | string[]): string => {
   if (Array.isArray(guessValue) && Array.isArray(targetValue)) {
     return guessValue.some(v => targetValue.includes(v)) 
       ? guessValue.every(v => targetValue.includes(v)) && targetValue.every(v => guessValue.includes(v))
