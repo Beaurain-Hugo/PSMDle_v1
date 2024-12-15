@@ -1,11 +1,11 @@
-import { Champion } from '../types/champion';
-import { champions } from '../data/champions';
+import { Professor } from '../types/professor';
+import { professors } from '../data/professors';
 import { getDaysSinceEpoch } from './dateUtils';
 
-export const getDailyChampion = (): Champion => {
+export const getDailyProfessor = (): Professor => {
   const daysSinceEpoch = getDaysSinceEpoch();
-  const index = daysSinceEpoch % champions.length;
-  return champions[index];
+  const index = daysSinceEpoch % professors.length;
+  return professors[index];
 };
 
 export const compareAttribute = (guessValue: any, targetValue: any): string => {

@@ -1,83 +1,96 @@
-import React, { useState, useEffect } from 'react';
-import { champions } from '../data/champions';
-import { getDailyChampion } from '../utils/championUtils';
-import Header from './Header';
-import ChampionSearch from './ChampionSearch';
-import GuessGrid from './GuessGrid';
-import WinMessage from './WinMessage';
-import { Champion } from '../types/champion';
+import React, { useState, useEffect } from "react";
+import { professors } from "../data/professors";
+import { getDailyProfessor } from "../utils/professorUtils";
+import Header from "./Header";
+import ProfessorSearch from "./ProfessorSearch";
+import GuessGrid from "./GuessGrid";
+import WinMessage from "./WinMessage";
+import { Professor } from "../types/professor";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function Game() {
-  const [dailyChampion, setDailyChampion] = useState<Champion | null>(null);
-  const [guesses, setGuesses] = useState<string[]>([]);
-  const [input, setInput] = useState('');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [gameWon, setGameWon] = useState(false);
+    const [dailyProfessor, setDailyProfessor] = useState<Professor | null>(null);
+    const [guesses, setGuesses] = useLocalStorage<string[]>("guesses", []);
+    const [input, setInput] = useState("");
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [gameWon, setGameWon] = useState(() => {
+        const savedGuesses = localStorage.getItem("guesses");
+        const savedDailyProfessor = localStorage.getItem("dailyProfessor");
+        if (savedGuesses && savedDailyProfessor) {
+            const guessesArray = JSON.parse(savedGuesses);
+            const dailyProfessor = JSON.parse(savedDailyProfessor);
+            return guessesArray.includes(dailyProfessor.name);
+        }
+        return false;
+    });
 
-  useEffect(() => {
-    setDailyChampion(getDailyChampion());
-  }, []);
+    useEffect(() => {
+        const professor = getDailyProfessor();
+        setDailyProfessor(professor);
+        localStorage.setItem("dailyProfessor", JSON.stringify(professor));
+    }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInput(value);
-    
-    if (value.length > 0) {
-      const filtered = champions
-        .map(c => c.name)
-        .filter(name => 
-          name.toLowerCase().includes(value.toLowerCase())
-        );
-      setSuggestions(filtered);
-    } else {
-      setSuggestions([]);
-    }
-  };
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setInput(value);
 
-  const handleGuess = (championName: string) => {
-    if (!dailyChampion || gameWon) return;
-    
-    const guess = champions.find(c => c.name === championName);
-    if (!guess) return;
+        if (value.length > 0) {
+            const filtered = professors
+                .map((c) => c.name)
+                .filter((name) =>
+                    name.toLowerCase().includes(value.toLowerCase())
+                );
+            setSuggestions(filtered);
+        } else {
+            setSuggestions([]);
+        }
+    };
 
-    setGuesses(prev => [...prev, championName]);
-    setInput('');
-    setSuggestions([]);
+    const handleGuess = (professorName: string) => {
+        if (!dailyProfessor || gameWon) return;
 
-    if (championName === dailyChampion.name) {
-      setGameWon(true);
-    }
-  };
+        const guess = professors.find((c) => c.name === professorName);
+        if (!guess) return;
 
-  return (
-    <div className="synthwave-layout">
-      <div className="relative z-10">
-        <Header />
-        <main className="container mx-auto px-4 pb-8">
-          <div className="neon-card max-w-4xl mx-auto">
-            <ChampionSearch
-              input={input}
-              onInputChange={handleInputChange}
-              suggestions={suggestions}
-              onSelect={handleGuess}
-              disabled={gameWon}
-            />
+        const newGuesses = [...guesses, professorName];
+        setGuesses(newGuesses);
+        setInput("");
+        setSuggestions([]);
 
-            <GuessGrid
-              guesses={guesses}
-              champions={champions}
-              dailyChampion={dailyChampion}
-            />
+        if (professorName === dailyProfessor.name) {
+            setGameWon(true);
+        }
+    };
 
-            {gameWon && dailyChampion && (
-              <WinMessage 
-                guessCount={guesses.length} 
-                championName={dailyChampion.name}
-              />
-            )}
-          </div>
-        </main>
-      </div>
-    </div>
-  );
+    return (
+        <div className="synthwave-layout">
+            <div className="relative z-10">
+                <Header />
+                <main className="container px-4 pb-8 mx-auto">
+                    <div className="flex flex-col max-w-4xl gap-8 mx-auto neon-card">
+                        {gameWon && dailyProfessor && (
+                            <WinMessage
+                                guessCount={guesses.length}
+                                professor={dailyProfessor}
+                            />
+                        )}
+
+                        <ProfessorSearch
+                            input={input}
+                            onInputChange={handleInputChange}
+                            suggestions={suggestions}
+                            onSelect={handleGuess}
+                            disabled={gameWon}
+                        />
+
+                        <GuessGrid
+                            guesses={guesses}
+                            professors={professors}
+                            dailyProfessor={dailyProfessor}
+                        />
+                    </div>
+                </main>
+            </div>
+        </div>
+    );
 }

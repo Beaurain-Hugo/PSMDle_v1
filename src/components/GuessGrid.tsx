@@ -1,18 +1,17 @@
-import React from 'react';
-import { Champion } from '../types/champion';
-import { compareAttribute } from '../utils/championUtils';
-import ChampionImage from './ChampionImage';
+import { Professor } from '../types/professor';
+import { compareAttribute } from '../utils/professorUtils';
 
 interface GuessGridProps {
   guesses: string[];
-  champions: Champion[];
-  dailyChampion: Champion | null;
+  professors: Professor[];
+  dailyProfessor: Professor | null;
 }
 
-export default function GuessGrid({ guesses, champions, dailyChampion }: GuessGridProps) {
+export default function GuessGrid({ guesses, professors, dailyProfessor }: GuessGridProps) {
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-6 gap-3 font-bold text-sm text-center p-2">
+      <div className="grid items-center justify-center grid-cols-7 gap-3 p-2 text-sm font-bold text-center">
+        <div className="text-[#ff00ff] neon-text">Photo</div>
         <div className="text-[#ff00ff] neon-text">Professeur</div>
         <div className="text-[#00ffff] neon-text">Genre</div>
         <div className="text-[#ff00ff] neon-text">Domaine</div>
@@ -21,13 +20,13 @@ export default function GuessGrid({ guesses, champions, dailyChampion }: GuessGr
         <div className="text-[#00ffff] neon-text">UE</div>
       </div>
 
-      {guesses.map((guessName, index) => {
-        const guess = champions.find(c => c.name === guessName)!;
+      {guesses.slice().reverse().map((guessName, index) => {
+        const guess = professors.find(c => c.name === guessName)!;
         return (
-          <div key={index} className="grid grid-cols-6 gap-3 text-sm items-center">
-            {/* <div className="flex justify-center">
-              {/* <ChampionImage name={guess.name} /> */}
-            {/* </div> */}
+          <div key={index} className="grid items-center justify-center grid-cols-7 gap-2 text-sm">
+            <div className="flex justify-center gap-1">
+              <img src={"https://ui-avatars.com/api/?name="+guess.name} alt={guess.name} />
+            </div>
             {Object.entries({
               name: guess.name,
               genre: guess.genre,
@@ -38,10 +37,10 @@ export default function GuessGrid({ guesses, champions, dailyChampion }: GuessGr
             }).map(([key, value], cellIndex) => (
               <div
                 key={cellIndex}
-                className={`p-3 rounded neon-border
+                className={`rounded neon-border text-purple-100 p-2 text-center size-full flex items-center justify-center
                   ${compareAttribute(
                     key === 'UE' ? guess.UE : value,
-                    key === 'UE' ? dailyChampion?.UE : dailyChampion?.[key as keyof Champion]
+                    key === 'UE' ? dailyProfessor?.UE : dailyProfessor?.[key as keyof Professor]
                   )}`}
               >
                 {value}

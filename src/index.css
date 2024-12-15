@@ -62,7 +62,7 @@
 }
 
 .neon-card {
-  @apply rounded-xl p-6;
+  @apply p-6 rounded-xl;
   background: rgba(10, 0, 31, 0.85);
   border: 2px solid rgba(255, 0, 255, 0.2);
   box-shadow: 0 0 20px rgba(255, 0, 255, 0.2),
@@ -71,8 +71,8 @@
 }
 
 .neon-input {
-  @apply w-full px-4 py-3 rounded-lg bg-opacity-20 bg-black;
-  @apply text-white placeholder-purple-300 outline-none;
+  @apply w-full px-4 py-3 bg-black rounded-lg bg-opacity-20;
+  @apply text-purple-100 placeholder-purple-300 outline-none;
   border: 2px solid rgba(255, 0, 255, 0.3);
   box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);
   transition: all 0.3s ease;
@@ -84,7 +84,7 @@
 }
 
 .neon-button {
-  @apply px-6 py-2 rounded-lg font-bold transition-all duration-300;
+  @apply px-6 py-2 font-bold transition-all duration-300 rounded-lg;
   background: linear-gradient(45deg, var(--neon-purple), var(--neon-pink));
   border: 2px solid transparent;
   box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
@@ -97,7 +97,7 @@
 }
 
 .grid-cell {
-  @apply p-3 rounded text-center transition-all duration-300;
+  @apply p-3 text-center transition-all duration-300 rounded;
   background: rgba(10, 0, 31, 0.9);
   border: 2px solid rgba(255, 0, 255, 0.2);
 }
