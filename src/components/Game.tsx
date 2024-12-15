@@ -6,26 +6,37 @@ import GuessGrid from "./GuessGrid";
 import WinMessage from "./WinMessage";
 import { Professor } from "../types/professor";
 import useLocalStorage from "../hooks/useLocalStorage";
+import { getDaysSinceEpoch } from "../utils/dateUtils";
+import Confetti from "react-confetti";
+import useWindowSize from "react-use/lib/useWindowSize";
 
 export default function Game() {
-    const [dailyProfessor, setDailyProfessor] = useState<Professor | null>(null);
+    const [dailyProfessor, setDailyProfessor] = useState<Professor | null>(
+        null
+    );
     const [guesses, setGuesses] = useLocalStorage<string[]>("guesses", []);
     const [input, setInput] = useState("");
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [gameWon, setGameWon] = useState(() => {
         const savedGuesses = localStorage.getItem("guesses");
-        const savedDailyProfessor = localStorage.getItem("dailyProfessor");
-        if (savedGuesses && savedDailyProfessor) {
-            const guessesArray = JSON.parse(savedGuesses);
-            const dailyProfessor = JSON.parse(savedDailyProfessor);
-            return guessesArray.includes(dailyProfessor.name);
+        if (!savedGuesses) {
+            return false;
         }
-        return false;
+        const guessesArray = JSON.parse(savedGuesses);
+        return guessesArray;
     });
+    const { width, height } = useWindowSize();
 
     useEffect(() => {
         const professor = getDailyProfessor();
         setDailyProfessor(professor);
+        if (
+            localStorage.getItem("lastVisit") !== getDaysSinceEpoch().toString()
+        ) {
+            localStorage.clear();
+            setGuesses([]);
+            localStorage.setItem("lastVisit", getDaysSinceEpoch().toString());
+        }
     }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +57,8 @@ export default function Game() {
     };
 
     const handleGuess = (professorName: string) => {
-        if (!dailyProfessor || gameWon || guesses.includes(professorName)) return;
+        if (!dailyProfessor || gameWon || guesses.includes(professorName))
+            return;
 
         const guess = professors.find((c) => c.name === professorName);
         if (!guess) return;
@@ -62,31 +74,36 @@ export default function Game() {
     };
 
     return (
-        <div className="relative z-10">
-            <main className="container px-4 pb-4 mx-auto md:pb-8">
-                <div className="flex flex-col max-w-full gap-4 mx-auto md:max-w-5xl md:gap-8 neon-card">
-                    {gameWon && dailyProfessor && (
-                        <WinMessage
-                            guessCount={guesses.length}
-                            professor={dailyProfessor}
+        <>
+            {gameWon && <Confetti width={width} height={2500} />}
+            <div className="relative z-10">
+                <main className="container px-4 pb-4 mx-auto md:pb-8">
+                    <div className="flex flex-col max-w-full gap-4 mx-auto md:max-w-5xl md:gap-8 neon-card">
+                        {gameWon && dailyProfessor && (
+                            <>
+                                <WinMessage
+                                    guessCount={guesses.length}
+                                    professor={dailyProfessor}
+                                />
+                            </>
+                        )}
+
+                        <ProfessorSearch
+                            input={input}
+                            onInputChange={handleInputChange}
+                            suggestions={suggestions}
+                            onSelect={handleGuess}
+                            disabled={gameWon}
                         />
-                    )}
 
-                    <ProfessorSearch
-                        input={input}
-                        onInputChange={handleInputChange}
-                        suggestions={suggestions}
-                        onSelect={handleGuess}
-                        disabled={gameWon}
-                    />
-
-                    <GuessGrid
-                        guesses={guesses}
-                        professors={professors}
-                        dailyProfessor={dailyProfessor}
-                    />
-                </div>
-            </main>
-        </div>
+                        <GuessGrid
+                            guesses={guesses}
+                            professors={professors}
+                            dailyProfessor={dailyProfessor}
+                        />
+                    </div>
+                </main>
+            </div>
+        </>
     );
 }

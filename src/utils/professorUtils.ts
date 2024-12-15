@@ -2,7 +2,22 @@ import { Professor } from '../types/professor';
 import { professors } from '../data/professors';
 import { getDaysSinceEpoch } from './dateUtils';
 
+const LAST_VISIT_KEY = 'lastVisit';
+
+const isNewDay = (): boolean => {
+  const lastVisit = localStorage.getItem(LAST_VISIT_KEY);
+  const daysSinceEpoch = getDaysSinceEpoch();
+  if (lastVisit === null || parseInt(lastVisit) !== daysSinceEpoch) {
+    localStorage.setItem(LAST_VISIT_KEY, daysSinceEpoch.toString());
+    return true;
+  }
+  return false;
+};
+
 export const getDailyProfessor = (): Professor => {
+  if (isNewDay()) {
+    localStorage.clear();
+  }
   const daysSinceEpoch = getDaysSinceEpoch();
   const index = daysSinceEpoch % professors.length;
   return professors[index];
