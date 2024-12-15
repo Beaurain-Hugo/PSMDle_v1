@@ -24,8 +24,8 @@ export default function GuessGrid({ guesses, professors, dailyProfessor }: Guess
         const guess = professors.find(c => c.name === guessName)!;
         return (
           <div key={index} className="grid items-center justify-center grid-cols-7 gap-2 text-sm">
-            <div className="flex justify-center gap-1">
-              <img src={"https://ui-avatars.com/api/?name="+guess.name} alt={guess.name} />
+            <div className="flex justify-center rounded size-32">
+              <img src={"https://ui-avatars.com/api/?name="+guess.name} alt={guess.name} className='rounded'/>
             </div>
             {Object.entries({
               name: guess.name,
