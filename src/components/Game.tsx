@@ -27,7 +27,6 @@ export default function Game() {
     useEffect(() => {
         const professor = getDailyProfessor();
         setDailyProfessor(professor);
-        // localStorage.setItem("dailyProfessor", JSON.stringify(professor));
     }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +38,8 @@ export default function Game() {
                 .map((c) => c.name)
                 .filter((name) =>
                     name.toLowerCase().includes(value.toLowerCase())
-                );
+                )
+                .filter((name) => !guesses.includes(name)); // Exclure les professeurs déjà devinés
             setSuggestions(filtered);
         } else {
             setSuggestions([]);
@@ -47,7 +47,7 @@ export default function Game() {
     };
 
     const handleGuess = (professorName: string) => {
-        if (!dailyProfessor || gameWon) return;
+        if (!dailyProfessor || gameWon || guesses.includes(professorName)) return; // Empêcher de deviner un professeur déjà deviné
 
         const guess = professors.find((c) => c.name === professorName);
         if (!guess) return;
