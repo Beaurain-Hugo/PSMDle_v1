@@ -25,7 +25,7 @@ export default function Game() {
         const guessesArray = JSON.parse(savedGuesses);
         return guessesArray;
     });
-    const { width, height } = useWindowSize();
+    const { width } = useWindowSize();
 
     useEffect(() => {
         const professor = getDailyProfessor();
