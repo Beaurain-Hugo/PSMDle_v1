@@ -23,6 +23,15 @@ export const getDailyProfessor = (): Professor => {
   return professors[index];
 };
 
+export const getYesterdayProfessor = (): Professor => {
+  if (isNewDay()) {
+    localStorage.clear();
+  }
+  const daysSinceEpoch = getDaysSinceEpoch();
+  const index = (daysSinceEpoch-1) % professors.length;
+  return professors[index];
+};
+
 export const compareAttribute = (guessValue: string | string[], targetValue: string | string[]): string => {
   if (Array.isArray(guessValue) && Array.isArray(targetValue)) {
     return guessValue.some(v => targetValue.includes(v)) 
